@@ -48,14 +48,32 @@ try
         string logoPath = Path.Combine(DATA_ROOT_PATH, "logo", $"{brandName}.svg");
         var brandImageResponse = await sender.SendBrandImage(brandGuid, logoPath);
 
-        Console.WriteLine($"{brandName}: \n");
-        
         string[] smartphoneImagePaths = Directory.GetFiles(brandPath);
+
         foreach(string smartphoneImagePath in smartphoneImagePaths)
         {
             string smartphoneImageTitle = smartphoneImagePath.Replace(DATA_ROOT_PATH + $"\\{brandName}\\", "");
             string smartphoneName = GetSmartphoneNameFromImageTitle(smartphoneImageTitle);
-            Console.WriteLine($"\t{smartphoneName}");
+
+            Guid smartphoneGuid = Guid.NewGuid();
+
+            Random rand = new Random();
+            decimal smartphonePrice = rand.Next(500, 2000);
+            int smartphoneDiscount = rand.Next(0, 50);
+
+            // Send Smartphone data to API
+            await sender.SendSmartphone(
+                smartphoneGuid,
+                brandName,
+                smartphoneName,
+                smartphoneName,
+                smartphonePrice,
+                smartphoneDiscount
+                );
+
+            // Send SmartphoneImage to API
+            await sender.SendSmartphoneImage(smartphoneGuid, smartphoneImagePath, brandName);
+
         }
 
     }

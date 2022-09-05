@@ -48,14 +48,34 @@ namespace DummyDataSenderToWebShop
             return await SendImage("/images", imagePath, brandId);
         }
 
-        public async Task<HttpResponseMessage> SendSmartphone()
+        public async Task<HttpResponseMessage> SendSmartphone(
+            Guid smartphoneId,
+            string brandName,
+            string name,
+            string description,
+            decimal price,
+            int discount)
         {
-            return null;
+            var smartphone = new
+            {
+                id = smartphoneId,
+                name = name,
+                brandName = brandName,
+                description = description,
+                price = price,
+                discount = discount
+            };
+
+            var data = ObjectToJson(smartphone);
+
+            var response = await SendJsonData($"/catalog/{brandName}", data);
+
+            return response;
         }
 
-        public async Task<HttpResponseMessage> SendSmartphoneImage()
+        public async Task<HttpResponseMessage> SendSmartphoneImage(Guid smartphoneId, string imagePath, string brandName)
         {
-            return null;
+            return await SendImage($"/images/{brandName}", imagePath, smartphoneId);
         }
 
         private async Task GetJWT(string email, string password)
