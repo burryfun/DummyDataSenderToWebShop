@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace DummyDataSenderToWebShop
@@ -22,16 +23,16 @@ namespace DummyDataSenderToWebShop
             _url = api_url;
         }
 
-        public async Task<HttpResponseMessage> SendBrand(string name)
+        public async Task<HttpResponseMessage> SendBrand(Guid brandId, string name)
         {
-
-            if (name == null)
+            if (String.IsNullOrEmpty(name) || brandId == Guid.Empty)
             {
                 throw new ArgumentNullException(nameof(name));
             }
 
             var brand = new
             {
+                id = brandId,
                 name = name
             };
 
@@ -42,12 +43,17 @@ namespace DummyDataSenderToWebShop
             return response;
         }
 
-        public async Task<HttpResponseMessage> SendBrandImage(string imagePath)
+        public async Task<HttpResponseMessage> SendBrandImage(Guid brandId, string imagePath)
+        {
+            return await SendImage("/images", imagePath, brandId);
+        }
+
+        public async Task<HttpResponseMessage> SendSmartphone()
         {
             return null;
         }
 
-        public async Task<HttpResponseMessage> SendSmartphone()
+        public async Task<HttpResponseMessage> SendSmartphoneImage()
         {
             return null;
         }
@@ -101,6 +107,33 @@ namespace DummyDataSenderToWebShop
             return await _httpClient.SendAsync(request);
         }
 
+        private async Task<HttpResponseMessage> SendImage(string endpoint, string imagePath, Guid imageId)
+        {
+            using (var form = new MultipartFormDataContent())
+            {
+
+                form.Add(new StringContent(imageId.ToString()), name:"Name");
+
+
+                var content = new StreamContent(File.OpenRead(imagePath));
+                content.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+                form.Add(content, name: "Image", "image");
+
+                HttpRequestMessage request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(_url + endpoint),
+                    Headers =
+                    {
+                        { "Authorization", $"Bearer {_jwt}" }
+                    },
+                    Content = form
+                };
+
+                return await _httpClient.SendAsync(request);
+            }
+
+        }
 
         private StringContent ObjectToJson(object _object)
         {

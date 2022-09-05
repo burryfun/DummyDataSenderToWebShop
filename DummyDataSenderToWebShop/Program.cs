@@ -1,4 +1,5 @@
 ﻿using DummyDataSenderToWebShop;
+using System.Text.RegularExpressions;
 
 
 //For all brands:
@@ -33,9 +34,30 @@ try
 
     foreach (string brandPath in brandDirectories)
     {
+        if (brandPath == DATA_ROOT_PATH + "\\" + "logo")
+        {
+            continue;
+        }
+
         string brandName = brandPath.Replace(DATA_ROOT_PATH + "\\", "");
-        //var response = await sender.SendBrand(brandName);
-        Console.WriteLine(brandName);
+        Guid brandGuid = Guid.NewGuid();
+        // Send brand to API
+        var brandResponse = await sender.SendBrand(brandGuid, brandName);
+
+        // Send brandLogo to API
+        string logoPath = Path.Combine(DATA_ROOT_PATH, "logo", $"{brandName}.svg");
+        var brandImageResponse = await sender.SendBrandImage(brandGuid, logoPath);
+
+        Console.WriteLine($"{brandName}: \n");
+        
+        string[] smartphoneImagePaths = Directory.GetFiles(brandPath);
+        foreach(string smartphoneImagePath in smartphoneImagePaths)
+        {
+            string smartphoneImageTitle = smartphoneImagePath.Replace(DATA_ROOT_PATH + $"\\{brandName}\\", "");
+            string smartphoneName = GetSmartphoneNameFromImageTitle(smartphoneImageTitle);
+            Console.WriteLine($"\t{smartphoneName}");
+        }
+
     }
 
 } catch (Exception ex)
@@ -43,3 +65,13 @@ try
     Console.WriteLine(ex);
 }
 
+string GetSmartphoneNameFromImageTitle(string imageTitle)
+{
+    string pattern = @"смартфон |фото, technodom.kz.jpg";
+    string target = "";
+    Regex regex = new Regex(pattern);
+
+    string smartphoneName = regex.Replace(imageTitle, target);
+
+    return smartphoneName;
+}
