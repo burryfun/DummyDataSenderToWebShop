@@ -44,9 +44,19 @@ try
         // Send brand to API
         var brandResponse = await sender.SendBrand(brandGuid, brandName);
 
+        if (brandResponse.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Brand {brandName} successfuly added");
+        }
+
         // Send brandLogo to API
         string logoPath = Path.Combine(DATA_ROOT_PATH, "logo", $"{brandName}.svg");
         var brandImageResponse = await sender.SendBrandImage(brandGuid, logoPath);
+
+        if (brandImageResponse.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Brand image for {brandName} successfuly added");
+        }
 
         string[] smartphoneImagePaths = Directory.GetFiles(brandPath);
 
@@ -62,7 +72,7 @@ try
             int smartphoneDiscount = rand.Next(0, 50);
 
             // Send Smartphone data to API
-            await sender.SendSmartphone(
+            var smartphoneResponse = await sender.SendSmartphone(
                 smartphoneGuid,
                 brandName,
                 smartphoneName,
@@ -71,9 +81,18 @@ try
                 smartphoneDiscount
                 );
 
-            // Send SmartphoneImage to API
-            await sender.SendSmartphoneImage(smartphoneGuid, smartphoneImagePath, brandName);
+            if (smartphoneResponse.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Smartphone {smartphoneName} successfuly added");
+            }
 
+            // Send SmartphoneImage to API
+            var smartphoneImageResponse = await sender.SendSmartphoneImage(smartphoneGuid, smartphoneImagePath, brandName);
+            
+            if (brandResponse.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Smartphone image for {smartphoneName} successfuly added");
+            }
         }
 
     }
