@@ -16,7 +16,7 @@ string APP_ROOT_PATH = APP_PATH.Replace("\\bin\\Debug\\net6.0", "");
 
 string DATA_ROOT_PATH = APP_ROOT_PATH + "/data";
 
-const string URL = "http://localhost:5054/api";
+const string URL = "http://localhost/api";
 const string EMAIL = "admin@admin.com";
 const string PASSWORD = "admin";
 
