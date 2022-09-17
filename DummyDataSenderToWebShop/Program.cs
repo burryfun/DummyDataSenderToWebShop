@@ -12,11 +12,10 @@ using System.Text.RegularExpressions;
 
 
 string APP_PATH = Directory.GetCurrentDirectory();
-string APP_ROOT_PATH = APP_PATH.Replace("\\bin\\Debug\\net6.0", "");
 
-string DATA_ROOT_PATH = APP_ROOT_PATH + "/data";
+string DATA_ROOT_PATH = APP_PATH + "/data";
 
-const string URL = "http://localhost/api";
+const string URL = "http://localhost:5000/api";
 const string EMAIL = "admin@admin.com";
 const string PASSWORD = "admin";
 
@@ -34,12 +33,12 @@ try
 
     foreach (string brandPath in brandDirectories)
     {
-        if (brandPath == DATA_ROOT_PATH + "\\" + "logo")
+        if (brandPath == DATA_ROOT_PATH + "/" + "logo")
         {
             continue;
         }
 
-        string brandName = brandPath.Replace(DATA_ROOT_PATH + "\\", "");
+        string brandName = brandPath.Replace(DATA_ROOT_PATH + "/", "");
         Guid brandGuid = Guid.NewGuid();
         // Send brand to API
         var brandResponse = await sender.SendBrand(brandGuid, brandName);

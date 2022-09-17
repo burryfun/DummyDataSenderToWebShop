@@ -17,4 +17,5 @@ RUN dotnet publish "DummyDataSenderToWebShop.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ["/DummyDataSenderToWebShop/data", "/app/data"]
 ENTRYPOINT ["dotnet", "DummyDataSenderToWebShop.dll"]
