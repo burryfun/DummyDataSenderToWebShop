@@ -61,7 +61,7 @@ try
 
         foreach(string smartphoneImagePath in smartphoneImagePaths)
         {
-            string smartphoneImageTitle = smartphoneImagePath.Replace(DATA_ROOT_PATH + $"\\{brandName}\\", "");
+            string smartphoneImageTitle = smartphoneImagePath.Replace($"{DATA_ROOT_PATH}/{brandName}/", "");
             string smartphoneName = GetSmartphoneNameFromImageTitle(smartphoneImageTitle);
 
             Guid smartphoneGuid = Guid.NewGuid();
